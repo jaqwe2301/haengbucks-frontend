@@ -123,8 +123,29 @@ const findNearbyStops = async (latitude: number, longitude: number) => {
 
 export async function POST(request: Request) {
   const requestOrigin = request.headers.get("origin");
-  if (requestOrigin && requestOrigin !== new URL(request.url).origin) {
-    return jsonResponse({ message: "허용되지 않은 요청이에요." }, 403);
+
+  if (requestOrigin) {
+    const forwardedHost = request.headers
+      .get("x-forwarded-host")
+      ?.split(",")[0]
+      .trim()
+      .toLowerCase();
+    const requestHost = request.headers.get("host")?.trim().toLowerCase();
+    const urlHost = new URL(request.url).host.toLowerCase();
+    const allowedHosts = new Set(
+      [forwardedHost, requestHost, urlHost].filter(
+        (host): host is string => Boolean(host),
+      ),
+    );
+
+    try {
+      const originHost = new URL(requestOrigin).host.toLowerCase();
+      if (!allowedHosts.has(originHost)) {
+        return jsonResponse({ message: "허용되지 않은 요청이에요." }, 403);
+      }
+    } catch {
+      return jsonResponse({ message: "허용되지 않은 요청이에요." }, 403);
+    }
   }
 
   let requestBody: { latitude?: unknown; longitude?: unknown };
