@@ -383,11 +383,11 @@ export default function Home() {
 
       <section className="phone-frame" aria-labelledby="page-title">
         <header className="topbar">
-          <a className="brand" href="#top" aria-label="행벅스 홈">
+          <a className="brand" href="#top" aria-label="행운행 홈">
             <span className="brand-mark" aria-hidden="true">
               🍀
             </span>
-            <span>행벅스</span>
+            <span>행운행</span>
           </a>
           <span className="soft-badge">전국 운행 중</span>
         </header>
